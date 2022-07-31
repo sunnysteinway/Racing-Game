@@ -48,6 +48,26 @@ def move_player(player_car):
     if not moved:
         player_car.reduce_speed()
 
+def finish_line_ribbon(player_car, computer_car):
+    player_finish_poi = player_car.collide(FINISH_MASK, *FINISH_POSITION)
+    computer_finish_poi = computer_car.collide(FINISH_MASK, *FINISH_POSITION)
+
+    if computer_finish_poi != None:
+        print("Computer wins!")
+        player_car.reset()
+        computer_car.reset()
+
+    if player_finish_poi != None:
+
+        # check from which direction does the car collide
+        if player_finish_poi[1] == 0:
+            player_car.bounce()
+        # collide with the finish line after finishing the entire track
+        else:
+            print("Player wins!")
+            player_car.reset()
+            computer_car.reset()
+
 def main():
     
     # set up the display
@@ -84,24 +104,8 @@ def main():
         if player_car.collide (TRACK_BORDER_MASK) != None:
             player_car.bounce()
 
-        player_finish_poi = player_car.collide(FINISH_MASK, *FINISH_POSITION)
-        computer_finish_poi = computer_car.collide(FINISH_MASK, *FINISH_POSITION)
-
-        if computer_finish_poi != None:
-            print("Computer wins!")
-            player_car.reset()
-            computer_car.reset()
-
-        if player_finish_poi != None:
-
-            # check from which direction does the car collide
-            if player_finish_poi[1] == 0:
-                player_car.bounce()
-            # collide with the finish line after finishing the entire track
-            else:
-                print("Player wins!")
-                player_car.reset()
-                computer_car.reset()
+        # detect which car enter the finish line first
+        finish_line_ribbon(player_car, computer_car)
         
     print(computer_car.path)
     pygame.quit()
