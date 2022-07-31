@@ -1,6 +1,4 @@
 import pygame
-import time
-import math
 
 import utilities
 import cars

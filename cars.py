@@ -1,7 +1,5 @@
 import pygame
-import time
 import math
-import pickle
 
 import utilities
 
