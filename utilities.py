@@ -1,5 +1,4 @@
 import pygame
-import math
 import pickle
 
 def scale_image(img, factor):
