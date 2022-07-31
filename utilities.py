@@ -26,3 +26,10 @@ def load_resources(filename, type):
         # unpickle
         with open(filename, "rb") as fp:
             return pickle.load(fp)
+
+def blit_text_center(win, font, txt):
+    """
+    Things that we want to write onto the screen
+    """
+    render = font.render(txt, 1, (200, 200, 200))
+    win.blit(render, (win.get_width()/2 - render.get_width()/2, win.get_height()/2 - render.get_height()/2))

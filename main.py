@@ -2,6 +2,10 @@ import pygame
 
 import utilities
 import cars
+import menu
+
+pygame.font.init()
+MAIN_FONT = pygame.font.SysFont("comicsans", 44)
 
 # load images
 GRASS = utilities.scale_image(pygame.image.load('images/grass.jpg'), factor=2.5)
@@ -81,6 +85,7 @@ def main():
 
     player_car = cars.PlayerCar(4, 3)
     computer_car = cars.ComputerCar(4, 4)
+    game_info = menu.GameInfo()
 
     while running:
 
@@ -88,14 +93,25 @@ def main():
 
         draw(WIN, images, player_car, computer_car)
 
+        while not game_info.started:
+            utilities.blit_text_center(WIN, MAIN_FONT, f"Press any key to start level {game_info.level}...")
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                    pygame.quit()
+                    break
+                # get the path for the computer car
+                elif event.type == pygame.KEYDOWN:
+                    game_info.start_level()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 running = False
                 break
-            # get the path for the computer car
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                computer_car.path.append(pos)
+            # # get the path for the computer car
+            # elif event.type == pygame.MOUSEBUTTONDOWN:
+            #     pos = pygame.mouse.get_pos()
+            #     computer_car.path.append(pos)
         
         move_player(player_car)
         computer_car.move()
