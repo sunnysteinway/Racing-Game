@@ -1,4 +1,5 @@
 import pygame
+from sqlalchemy import false
 
 import utilities
 import cars
@@ -86,6 +87,7 @@ def main():
     player_car = cars.PlayerCar(4, 3)
     computer_car = cars.ComputerCar(4, 4)
     game_info = menu.GameInfo()
+    flagMenu = True
 
     while running:
 
@@ -93,35 +95,39 @@ def main():
 
         draw(WIN, images, player_car, computer_car)
 
-        while not game_info.started:
+        while not game_info.started and flagMenu:
             utilities.blit_text_center(WIN, MAIN_FONT, f"Press any key to start level {game_info.level}...")
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                    running = False
+                    flagMenu = False
                     pygame.quit()
                     break
                 # get the path for the computer car
                 elif event.type == pygame.KEYDOWN:
                     game_info.start_level()
+                    flagMenu = False
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                running = False
-                break
+        if game_info.started:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                    running = False
+                    break
             # # get the path for the computer car
             # elif event.type == pygame.MOUSEBUTTONDOWN:
             #     pos = pygame.mouse.get_pos()
             #     computer_car.path.append(pos)
         
-        move_player(player_car)
-        computer_car.move()
+            move_player(player_car)
+            computer_car.move()
 
-        # check if the car hit the boundry of the track
-        if player_car.collide (TRACK_BORDER_MASK) != None:
-            player_car.bounce()
+            # check if the car hit the boundry of the track
+            if player_car.collide (TRACK_BORDER_MASK) != None:
+                player_car.bounce()
 
-        # detect which car enter the finish line first
-        finish_line_ribbon(player_car, computer_car)
+            # detect which car enter the finish line first
+            finish_line_ribbon(player_car, computer_car)
         
     print(computer_car.path)
     pygame.quit()
