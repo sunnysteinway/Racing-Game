@@ -1,3 +1,4 @@
+from numpy import diff
 import pygame
 import time
 import math
@@ -110,3 +111,57 @@ class ComputerCar(AbstractCar):
         
         super().draw(win)
         self.draw_point(win)
+
+    def calculate_angle(self):
+        '''
+        Calculate the angle of the target point
+        '''
+        # grab the position of the target point
+        targetX, targetY = self.path[self.cur_point]
+
+        # calculate the distance between the target point and the current position
+        diffX = targetX - self.x
+        diffY = targetY - self.y
+
+        if diffY == 0:
+            desired_angle = math.pi / 2
+        else:
+            desired_angle = math.atan(diffX / diffY)
+        
+        if targetY > self.y:
+            desired_angle += math.pi
+
+        difference_angle = self.angle - math.degrees(desired_angle)
+
+        if difference_angle >= 180:
+            difference_angle -= 360
+        
+        if difference_angle > 0:
+            self.angle -= min(self.rotation_vel, abs(difference_angle)) # we want to avoid the car jittering
+        else:
+            self.angle += min(self.rotation_vel, abs(difference_angle))
+
+    def update_path_point(self):
+        '''
+        Check if the car has reached the point or not
+        '''
+        target = self.path[self.cur_point]
+        ego = pygame.Rect(self.x, self.y, self.img.get_width(), self.img.get_height())
+
+        # if we have collide the target point, then we can move forward to the next target
+        if ego.collidepoint(*target):
+            self.cur_point += 1
+
+    def move(self):
+        """
+        The computer car needs to follow along the predefined path
+        """
+        # we want to make sure that it does not try to access an index point that does not exist
+        if self.cur_point >= len(self.path):
+            return
+        
+        self.calculate_angle()
+
+        self.update_path_point()
+
+        super().move()

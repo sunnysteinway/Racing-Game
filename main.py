@@ -78,7 +78,8 @@ def main():
                 pos = pygame.mouse.get_pos()
                 computer_car.path.append(pos)
         
-        move_player(player_car) 
+        move_player(player_car)
+        computer_car.move()
 
         # check if the car hit the boundry of the track
         if player_car.collide (TRACK_BORDER_MASK) != None:
