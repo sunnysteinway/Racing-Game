@@ -1,14 +1,14 @@
-from numpy import diff
 import pygame
 import time
 import math
+import pickle
 
 import utilities
 
 RED_CAR = utilities.scale_image(pygame.image.load('images/red-car.png'), 0.55)
 GREEN_CAR = utilities.scale_image(pygame.image.load('images/green-car.png'), 0.55)
 
-PATH = [(176, 164), (173, 112), (133, 72), (75, 94), (72, 466), (286, 701), (386, 714), (404, 648), (413, 551), (465, 488), (561, 502), (593, 555), (611, 643), (614, 711), (719, 732), (745, 408), (688, 366), (424, 350), (418, 266), (722, 245), (729, 95), (294, 89), (285, 366), (223, 413), (182, 378), (175, 250)]
+PATH = utilities.load_resources("computer-path", 0)
 
 class AbstractCar:
 
