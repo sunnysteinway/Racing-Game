@@ -10,6 +10,7 @@ TRACK_BORDER = utilities.scale_image(pygame.image.load('images/track-border.png'
 TRACK_BORDER_MASK = pygame.mask.from_surface(TRACK_BORDER)
 FINISH = pygame.image.load('images/finish.png')
 FINISH_MASK = pygame.mask.from_surface(FINISH)
+FINISH_POSITION = (130, 250)
 RED_CAR = utilities.scale_image(pygame.image.load('images/red-car.png'), 0.55)
 GREEN_CAR = utilities.scale_image(pygame.image.load('images/green-car.png'), 0.55)
 
@@ -83,16 +84,24 @@ def main():
         if player_car.collide (TRACK_BORDER_MASK) != None:
             player_car.bounce()
 
-        finish_poi = player_car.collide(FINISH_MASK, 130, 250)
-        if finish_poi != None:
+        player_finish_poi = player_car.collide(FINISH_MASK, *FINISH_POSITION)
+        computer_finish_poi = computer_car.collide(FINISH_MASK, *FINISH_POSITION)
+
+        if computer_finish_poi != None:
+            print("Computer wins!")
+            player_car.reset()
+            computer_car.reset()
+
+        if player_finish_poi != None:
 
             # check from which direction does the car collide
-            if finish_poi[1] == 0:
+            if player_finish_poi[1] == 0:
                 player_car.bounce()
             # collide with the finish line after finishing the entire track
             else:
-                print("finish!")
+                print("Player wins!")
                 player_car.reset()
+                computer_car.reset()
         
     print(computer_car.path)
     pygame.quit()
