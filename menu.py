@@ -33,4 +33,4 @@ class GameInfo:
         if not self.started:
             return 0
         else:
-            return self.start_time - time.time()
+            return time.time() - self.start_time
