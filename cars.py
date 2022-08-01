@@ -108,7 +108,7 @@ class ComputerCar(AbstractCar):
     def draw(self, win):
         
         super().draw(win)
-        self.draw_point(win)
+        # Wself.draw_point(win)
 
     def calculate_angle(self):
         '''
