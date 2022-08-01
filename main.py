@@ -1,5 +1,4 @@
 import pygame
-from sqlalchemy import false
 
 import utilities
 import cars
@@ -19,14 +18,29 @@ FINISH_POSITION = (130, 250)
 RED_CAR = utilities.scale_image(pygame.image.load('images/red-car.png'), 0.55)
 GREEN_CAR = utilities.scale_image(pygame.image.load('images/green-car.png'), 0.55)
 
+WIDTH, HEIGHT = TRACK.get_width(), TRACK.get_height()
+
+# colours
+GAINSBORO = (220,220,220)
+CORAL = (255,127,80)
+
 # set the uniform FPS rate
 FPS = 60
 
-def draw(win, images, player_car, computer_car):
-
+def draw(win, images, player_car, computer_car, game_info):
+    """
+    Draw objects and render text onto the canvas
+    """
+    # draw the backgrounds onto the canvas
     for img, pos in images:
         win.blit(img, pos)
 
+    # render text onto the canvas
+    level_txt = MAIN_FONT.render(f"Level {game_info.level}", 1, GAINSBORO)
+    win.blit(level_txt, (10, HEIGHT - level_txt.get_height() - 70))
+    time_txt = MAIN_FONT.render(f"Time: {game_info.get_level_time():.2f} s", 1, CORAL)
+    win.blit(time_txt, (10, HEIGHT - time_txt.get_height() - 5))
+    
     player_car.draw(win)
     computer_car.draw(win)
     pygame.display.update()
@@ -93,7 +107,7 @@ def main():
 
         clock.tick(FPS) # the while loop runs at 60 FPS
 
-        draw(WIN, images, player_car, computer_car)
+        draw(WIN, images, player_car, computer_car, game_info)
 
         while not game_info.started and flagMenu:
             utilities.show_start_menu(WIN, MAIN_FONT, f"Press any key to start level {game_info.level}...")
