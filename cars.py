@@ -52,7 +52,14 @@ class AbstractCar:
 
         # calculate the point of interest if there is one
         poi = mask.overlap(car_mask, offset)
-        return poi
+        if poi:
+            val = math.sqrt(poi[0] ** 2 + poi[1] ** 2)
+            if val > 100:
+                return poi
+            else:
+                return None
+        else:
+            return None
 
     def reset(self):
         self.x, self.y = self.START_POS
@@ -79,7 +86,7 @@ class PlayerCar(AbstractCar):
         If the car hit the boundery of the track,
         it will bounce back to the track
         """
-        self.vel *= -0.8
+        self.vel *= -0.5
         self.move()
 
 class ComputerCar(AbstractCar):
