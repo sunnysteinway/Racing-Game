@@ -163,3 +163,11 @@ class ComputerCar(AbstractCar):
         self.update_path_point()
 
         super().move()
+
+    def level_up(self, level):
+        """
+        Increase the speed of the computer as the level goes up
+        """
+        super().reset()
+        self.vel = self.max_vel + 0.2 * (level - 1)
+        self.cur_point = 0
