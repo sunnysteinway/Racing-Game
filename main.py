@@ -96,7 +96,7 @@ def main():
         draw(WIN, images, player_car, computer_car)
 
         while not game_info.started and flagMenu:
-            utilities.blit_text_center(WIN, MAIN_FONT, f"Press any key to start level {game_info.level}...")
+            utilities.show_start_menu(WIN, MAIN_FONT, f"Press any key to start level {game_info.level}...")
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
@@ -129,7 +129,7 @@ def main():
             # detect which car enter the finish line first
             finish_line_ribbon(player_car, computer_car)
         
-    print(computer_car.path)
+    # print(computer_car.path)
     pygame.quit()
 
 if __name__ == "__main__":

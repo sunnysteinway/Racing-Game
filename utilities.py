@@ -1,6 +1,9 @@
 import pygame
 import pickle
 
+FIREBRICK = (178,34,34)
+SILVER = (192,192,192)
+
 def scale_image(img, factor):
     """
     Scale the given image
@@ -27,9 +30,9 @@ def load_resources(filename, type):
         with open(filename, "rb") as fp:
             return pickle.load(fp)
 
-def blit_text_center(win, font, txt):
+def show_start_menu(win, font, txt):
     """
     Things that we want to write onto the screen
     """
-    render = font.render(txt, 1, (200, 200, 200))
+    render = font.render(txt, 1, SILVER, FIREBRICK)
     win.blit(render, (win.get_width()/2 - render.get_width()/2, win.get_height()/2 - render.get_height()/2))
