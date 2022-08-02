@@ -171,3 +171,10 @@ class ComputerCar(AbstractCar):
         super().reset()
         self.vel = self.max_vel + 0.2 * (level - 1)
         self.cur_point = 0
+
+    def reset(self):
+        """
+        Reset the computer car to its original status
+        """
+        self.x, self.y = self.START_POS
+        self.angle = 0

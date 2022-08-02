@@ -1,4 +1,3 @@
-from tkinter import font
 import pygame
 
 import utilities
@@ -76,12 +75,13 @@ def finish_line_ribbon(win, player_car, computer_car, game_info):
     computer_finish_poi = computer_car.collide(FINISH_MASK, *FINISH_POSITION)
 
     if computer_finish_poi != None:
-        utilities.show_msg(win, MAIN_FONT, "You lost!")
+        utilities.show_msg(win, MAIN_FONT, f"You lost!")
         pygame.display.update()
-        pygame.time.wait(2500)
+        pygame.time.wait(100)
         game_info.reset()
         player_car.reset()
         computer_car.reset()
+        game_info.start_level()
 
     if player_finish_poi != None:
 
@@ -131,6 +131,7 @@ def main():
                     flagMenu = False
 
         if not flagMenu:
+            computer_car.move()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     running = False
@@ -142,7 +143,6 @@ def main():
                     computer_car.x, computer_car.y = computer_car.path[-2]
                 
             move_player(player_car)
-            computer_car.move()
 
             # check if the car hit the boundry of the track
             if player_car.collide (TRACK_BORDER_MASK) != None:
