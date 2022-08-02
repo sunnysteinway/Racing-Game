@@ -78,7 +78,7 @@ def finish_line_ribbon(win, player_car, computer_car, game_info):
     if computer_finish_poi != None:
         utilities.show_msg(win, MAIN_FONT, "You lost!")
         pygame.display.update()
-        pygame.time.wait(5000)
+        pygame.time.wait(2500)
         game_info.reset()
         player_car.reset()
         computer_car.reset()
@@ -93,6 +93,7 @@ def finish_line_ribbon(win, player_car, computer_car, game_info):
             game_info.next_level()  # go to the next level
             player_car.reset()
             computer_car.level_up(game_info.level)  # update the difficulty of the next level
+            game_info.start_level()
 
 def main():
     
@@ -123,23 +124,23 @@ def main():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     running = False
                     flagMenu = False
-                    pygame.quit()
                     break
                 # get the path for the computer car
                 elif event.type == pygame.KEYDOWN:
                     game_info.start_level()
                     flagMenu = False
 
-        if game_info.started:
+        if not flagMenu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     running = False
                     break
-            # # get the path for the computer car
-            # elif event.type == pygame.MOUSEBUTTONDOWN:
-            #     pos = pygame.mouse.get_pos()
-            #     computer_car.path.append(pos)
-        
+                elif (event.type == pygame.KEYDOWN and event.key == pygame.K_i):
+                    player_car.x = 150
+                    player_car.y = 330
+                elif (event.type == pygame.KEYDOWN and event.key == pygame.K_o):
+                    computer_car.x, computer_car.y = computer_car.path[-2]
+                
             move_player(player_car)
             computer_car.move()
 
@@ -152,10 +153,11 @@ def main():
 
             if game_info.game_finished():
                 utilities.show_msg(WIN, MAIN_FONT, "You won the game!")
-                pygame.time.wait(5000)
-        
-    # print(computer_car.path)
-    pygame.quit()
+                pygame.time.wait(2500)
+                running = False
+                break
+            
+    pygame.quit()   # NOTE: it does not exit the program
 
 if __name__ == "__main__":
     main()

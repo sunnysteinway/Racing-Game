@@ -1,6 +1,6 @@
 import time
 
-LEVELS = 10
+LEVELS = 3
 
 class GameInfo:
 
