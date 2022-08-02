@@ -36,3 +36,4 @@ def show_msg(win, font, txt):
     """
     render = font.render(txt, 1, SILVER, FIREBRICK)
     win.blit(render, (win.get_width()/2 - render.get_width()/2, win.get_height()/2 - render.get_height()/2))
+    pygame.display.update()
