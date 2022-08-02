@@ -52,14 +52,7 @@ class AbstractCar:
 
         # calculate the point of interest if there is one
         poi = mask.overlap(car_mask, offset)
-        if poi:
-            val = math.sqrt(poi[0] ** 2 + poi[1] ** 2)
-            if val > 100:
-                return poi
-            else:
-                return None
-        else:
-            return None
+        return poi
 
     def reset(self):
         self.x, self.y = self.START_POS
