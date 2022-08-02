@@ -30,7 +30,7 @@ def load_resources(filename, type):
         with open(filename, "rb") as fp:
             return pickle.load(fp)
 
-def show_start_menu(win, font, txt):
+def show_msg(win, font, txt):
     """
     Things that we want to write onto the screen
     """

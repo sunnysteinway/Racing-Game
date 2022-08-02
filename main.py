@@ -1,3 +1,4 @@
+from tkinter import font
 import pygame
 
 import utilities
@@ -67,12 +68,18 @@ def move_player(player_car):
     if not moved:
         player_car.reduce_speed()
 
-def finish_line_ribbon(player_car, computer_car, game_info):
+def finish_line_ribbon(win, player_car, computer_car, game_info):
+    """
+    Detect which car cross the finish line first
+    """
     player_finish_poi = player_car.collide(FINISH_MASK, *FINISH_POSITION)
     computer_finish_poi = computer_car.collide(FINISH_MASK, *FINISH_POSITION)
 
     if computer_finish_poi != None:
-        print("Computer wins!")
+        utilities.show_msg(win, MAIN_FONT, "You lost!")
+        pygame.display.update()
+        pygame.time.wait(5000)
+        game_info.reset()
         player_car.reset()
         computer_car.reset()
 
@@ -83,10 +90,9 @@ def finish_line_ribbon(player_car, computer_car, game_info):
             player_car.bounce()
         # collide with the finish line after finishing the entire track
         else:
-            print("Player wins!")
-            game_info.next_level()
+            game_info.next_level()  # go to the next level
             player_car.reset()
-            computer_car.level_up(game_info.level)
+            computer_car.level_up(game_info.level)  # update the difficulty of the next level
 
 def main():
     
@@ -111,7 +117,7 @@ def main():
         draw(WIN, images, player_car, computer_car, game_info)
 
         while not game_info.started and flagMenu:
-            utilities.show_start_menu(WIN, MAIN_FONT, f"Press any key to start level {game_info.level}...")
+            utilities.show_msg(WIN, MAIN_FONT, f"Press any key to start level {game_info.level}...")
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
@@ -142,7 +148,11 @@ def main():
                 player_car.bounce()
 
             # detect which car enter the finish line first
-            finish_line_ribbon(player_car, computer_car, game_info)
+            finish_line_ribbon(WIN, player_car, computer_car, game_info)
+
+            if game_info.game_finished():
+                utilities.show_msg(WIN, MAIN_FONT, "You won the game!")
+                pygame.time.wait(5000)
         
     # print(computer_car.path)
     pygame.quit()

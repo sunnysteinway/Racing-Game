@@ -15,7 +15,7 @@ class GameInfo:
         self.level += 1
         self.started = False
 
-    def level_reset(self):
+    def reset(self):
 
         self.__init__()
 
