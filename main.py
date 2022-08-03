@@ -5,7 +5,7 @@ import cars
 import menu
 
 pygame.font.init()
-MAIN_FONT = pygame.font.SysFont("comicsans", 44)
+MAIN_FONT = pygame.font.SysFont("comicsans", 40)
 
 # load images
 GRASS = utilities.scale_image(pygame.image.load('images/grass.jpg'), factor=2.5)
@@ -21,6 +21,7 @@ GREEN_CAR = utilities.scale_image(pygame.image.load('images/green-car.png'), 0.5
 WIDTH, HEIGHT = TRACK.get_width(), TRACK.get_height()
 
 # colours
+SLATE = (119,136,153)
 GAINSBORO = (220,220,220)
 CORAL = (255,127,80)
 
@@ -95,6 +96,31 @@ def finish_line_ribbon(win, player_car, computer_car, game_info):
             computer_car.level_up(game_info.level)  # update the difficulty of the next level
             game_info.start_level()
 
+def game_intro(win):
+    '''
+    The game intro page
+    '''
+    intro = True
+
+    while intro:
+
+        win.blit(GRASS, (0, 0))
+        win.blit(TRACK, (0,0))
+
+        welcome_txt = MAIN_FONT.render("Welcome to the racing game", 1, GAINSBORO, SLATE)
+        win.blit(welcome_txt, welcome_txt.get_rect(center=(WIDTH/2, HEIGHT/2)))
+        welcome_txt = MAIN_FONT.render("Press ENTER to begin or press ESC to exit", 1, GAINSBORO, SLATE)
+        pos = welcome_txt.get_rect(center=(WIDTH/2, HEIGHT/2))
+        pos[1] += welcome_txt.get_height()
+        win.blit(welcome_txt, pos)
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                return False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                return True
+    return False
+
 def main():
     
     # set up the display
@@ -114,6 +140,11 @@ def main():
     while running:
 
         clock.tick(FPS) # the while loop runs at 60 FPS
+
+        running = game_intro(WIN)
+
+        if not running:
+            break
 
         draw(WIN, images, player_car, computer_car, game_info)
 
