@@ -37,3 +37,10 @@ def show_msg(win, font, txt):
     render = font.render(txt, 1, SILVER, FIREBRICK)
     win.blit(render, (win.get_width()/2 - render.get_width()/2, win.get_height()/2 - render.get_height()/2))
     pygame.display.update()
+
+def detect_mouse(mouse, x, y, width, height) -> bool:
+
+    if (x + width) > mouse[0] > x and (y + height) > mouse[1] > y :
+        return True
+    else:
+        return False

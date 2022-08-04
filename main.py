@@ -24,6 +24,11 @@ WIDTH, HEIGHT = TRACK.get_width(), TRACK.get_height()
 SLATE = (119,136,153)
 GAINSBORO = (220,220,220)
 CORAL = (255,127,80)
+RED = (255,0,0)
+MAROON = (128,0,0)
+LIME = (0,255,0)
+LAWN = (124,252,0)
+OLIVE = (107,142,35)
 
 # set the uniform FPS rate
 FPS = 60
@@ -113,6 +118,26 @@ def game_intro(win):
         pos = welcome_txt.get_rect(center=(WIDTH/2, HEIGHT/2))
         pos[1] += welcome_txt.get_height()
         win.blit(welcome_txt, pos)
+
+        # some constants
+        quitX = 150
+        quitY = 500
+        startX = WIDTH-250
+        startY = 500
+        buttonWidth = 100
+        buttonHeight = 50
+
+        mouse = pygame.mouse.get_pos() # get the position of the mouse
+
+        # determine whether the mouse is within the buttons
+        pygame.draw.rect(win, MAROON, (quitX, quitY, buttonWidth, buttonHeight))
+        pygame.draw.rect(win, OLIVE, (startX, startY, buttonWidth, buttonHeight))
+
+        if utilities.detect_mouse(mouse, quitX, quitY, buttonWidth, buttonHeight):
+            pygame.draw.rect(win, RED, (quitX, quitY, buttonWidth, buttonHeight))
+        if utilities.detect_mouse(mouse, startX, startY, buttonWidth, buttonHeight):
+            pygame.draw.rect(win, LIME, (startX, startY, buttonWidth, buttonHeight))
+
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
