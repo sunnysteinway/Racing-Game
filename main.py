@@ -6,6 +6,7 @@ import menu
 
 pygame.font.init()
 MAIN_FONT = pygame.font.SysFont("comicsans", 40)
+MEDIUM_FONT = pygame.font.SysFont("georgia", 30)
 
 # load images
 GRASS = utilities.scale_image(pygame.image.load('images/grass.jpg'), factor=2.5)
@@ -21,6 +22,7 @@ GREEN_CAR = utilities.scale_image(pygame.image.load('images/green-car.png'), 0.5
 WIDTH, HEIGHT = TRACK.get_width(), TRACK.get_height()
 
 # colours
+BLACK = (0, 0, 0)
 SLATE = (119,136,153)
 GAINSBORO = (220,220,220)
 CORAL = (255,127,80)
@@ -128,6 +130,7 @@ def game_intro(win):
         buttonHeight = 50
 
         mouse = pygame.mouse.get_pos() # get the position of the mouse
+        click = pygame.mouse.get_pressed()  # get the buttons of the mouse
 
         # determine whether the mouse is within the buttons
         pygame.draw.rect(win, MAROON, (quitX, quitY, buttonWidth, buttonHeight))
@@ -135,8 +138,19 @@ def game_intro(win):
 
         if utilities.detect_mouse(mouse, quitX, quitY, buttonWidth, buttonHeight):
             pygame.draw.rect(win, RED, (quitX, quitY, buttonWidth, buttonHeight))
+            if click[0]:
+                return False
         if utilities.detect_mouse(mouse, startX, startY, buttonWidth, buttonHeight):
             pygame.draw.rect(win, LIME, (startX, startY, buttonWidth, buttonHeight))
+            if click[0]:
+                return True
+
+        # put text on the buttons
+        level_txt = MEDIUM_FONT.render("Quit", 1, BLACK)
+        win.blit(level_txt, level_txt.get_rect(center=(quitX+0.5*buttonWidth, quitY+0.5*buttonHeight)))
+        level_txt = MEDIUM_FONT.render("Start", 1, BLACK)
+        win.blit(level_txt, level_txt.get_rect(center=(startX+0.5*buttonWidth, startY+0.5*buttonHeight)))
+
 
         pygame.display.update()
         for event in pygame.event.get():
