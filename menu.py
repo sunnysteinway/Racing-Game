@@ -1,4 +1,5 @@
 import time
+import pickle
 
 LEVELS = 3
 
@@ -34,3 +35,43 @@ class GameInfo:
             return 0
         else:
             return time.time() - self.start_time
+
+class Leaderboard:
+
+    def __init__(self) -> None:
+        self.q = []
+        self.filename = "leaderboard"
+        self.size = 5
+        self.load_data()
+        pass
+
+    def load_data(self):
+
+        with open(self.filename, 'rb') as f:
+            self.q = pickle.load(f)
+
+    def save_data(self):
+
+        with open(self.filename, 'wb') as f:
+            pickle.dump(self.q, f)
+
+    def append(self, data):
+
+        if len(self.q) < self.size:
+            self.q.append(data)
+            self.q.sort()
+            return True
+        else:
+            last_item = self.q[-1]
+
+            if data[0] > last_item[0]:
+                return False
+            else:
+                self.q.append(data)
+                self.q.sort()
+                self.q.pop()
+                return True
+    
+    def access(self):
+
+        return self.q
