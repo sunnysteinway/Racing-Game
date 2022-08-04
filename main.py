@@ -180,7 +180,8 @@ def main():
 
         clock.tick(FPS) # the while loop runs at 60 FPS
 
-        running = game_intro(WIN)
+        if flagMenu:
+            running = game_intro(WIN)
 
         if not running:
             break
