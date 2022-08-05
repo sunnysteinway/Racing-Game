@@ -7,6 +7,7 @@ import menu
 pygame.font.init()
 MAIN_FONT = pygame.font.SysFont("comicsans", 40)
 MEDIUM_FONT = pygame.font.SysFont("georgia", 30)
+SMALL_FONT = pygame.font.SysFont("georgia", 24)
 
 # load images
 GRASS = utilities.scale_image(pygame.image.load('images/grass.jpg'), factor=2.5)
@@ -23,6 +24,7 @@ WIDTH, HEIGHT = TRACK.get_width(), TRACK.get_height()
 
 # colours
 BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
 SLATE = (119,136,153)
 GAINSBORO = (220,220,220)
 CORAL = (255,127,80)
@@ -31,6 +33,10 @@ MAROON = (128,0,0)
 LIME = (0,255,0)
 LAWN = (124,252,0)
 OLIVE = (107,142,35)
+INDIGO = (75,0,130)
+VIOLET = (138,43,226)
+GOLD = (255,215,0)
+ORANGE = (255,140,0)
 
 # set the uniform FPS rate
 FPS = 60
@@ -90,18 +96,23 @@ def finish_line_ribbon(win, player_car, computer_car, game_info):
         player_car.reset()
         computer_car.reset()
         game_info.start_level()
+        return -1
 
     if player_finish_poi != None:
 
         # check from which direction does the car collide
         if player_finish_poi[1] == 0:
             player_car.bounce()
+            return -1
         # collide with the finish line after finishing the entire track
         else:
             game_info.next_level()  # go to the next level
             player_car.reset()
             computer_car.level_up(game_info.level)  # update the difficulty of the next level
             game_info.start_level()
+            return game_info.get_level_time()
+    
+    return -1
 
 def game_intro(win):
     '''
@@ -126,7 +137,9 @@ def game_intro(win):
         quitY = 500
         startX = WIDTH-250
         startY = 500
-        buttonWidth = 100
+        leaderboardX = 0.5*(quitX+startX)
+        leaderboardY = 500
+        buttonWidth = 150
         buttonHeight = 50
 
         mouse = pygame.mouse.get_pos() # get the position of the mouse
@@ -135,30 +148,96 @@ def game_intro(win):
         # determine whether the mouse is within the buttons
         pygame.draw.rect(win, MAROON, (quitX, quitY, buttonWidth, buttonHeight))
         pygame.draw.rect(win, OLIVE, (startX, startY, buttonWidth, buttonHeight))
+        pygame.draw.rect(win, INDIGO, (leaderboardX, leaderboardY, buttonWidth, buttonHeight))
 
         if utilities.detect_mouse(mouse, quitX, quitY, buttonWidth, buttonHeight):
             pygame.draw.rect(win, RED, (quitX, quitY, buttonWidth, buttonHeight))
             if click[0]:
-                return False
+                return -1
         if utilities.detect_mouse(mouse, startX, startY, buttonWidth, buttonHeight):
             pygame.draw.rect(win, LIME, (startX, startY, buttonWidth, buttonHeight))
             if click[0]:
-                return True
+                return 2
+        if utilities.detect_mouse(mouse, leaderboardX, leaderboardY, buttonWidth, buttonHeight):
+            pygame.draw.rect(win, VIOLET, (leaderboardX, leaderboardY, buttonWidth, buttonHeight))
+            if click[0]:
+                return 1
 
         # put text on the buttons
-        level_txt = MEDIUM_FONT.render("Quit", 1, BLACK)
-        win.blit(level_txt, level_txt.get_rect(center=(quitX+0.5*buttonWidth, quitY+0.5*buttonHeight)))
-        level_txt = MEDIUM_FONT.render("Start", 1, BLACK)
-        win.blit(level_txt, level_txt.get_rect(center=(startX+0.5*buttonWidth, startY+0.5*buttonHeight)))
-
+        menu_txt = MEDIUM_FONT.render("Quit", 1, BLACK)
+        win.blit(menu_txt, menu_txt.get_rect(center=(quitX+0.5*buttonWidth, quitY+0.5*buttonHeight)))
+        menu_txt = MEDIUM_FONT.render("Start", 1, BLACK)
+        win.blit(menu_txt, menu_txt.get_rect(center=(startX+0.5*buttonWidth, startY+0.5*buttonHeight)))
+        menu_txt = SMALL_FONT.render("Leaderboard", 1, WHITE)
+        win.blit(menu_txt, menu_txt.get_rect(center=(leaderboardX+0.5*buttonWidth, leaderboardY+0.5*buttonHeight)))
 
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                return False
+                return -1
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                return True
-    return False
+                return 2
+    return 0
+
+def game_leaderboard(win, board):
+    
+    leader = True
+    while leader:
+
+        # the background of the leaderboard
+        win.fill(WHITE)
+
+        # the title of the leaderboard
+        title_txt = MEDIUM_FONT.render("Leaderboard", 1, BLACK)
+        win.blit(title_txt, title_txt.get_rect(center=(0.5*WIDTH, 50)))
+        pygame.draw.line(win, BLACK, start_pos=(50, 70), end_pos=(WIDTH - 50, 70))
+
+        # the content of the leaderboard
+        curY = 200
+        i = 1
+        ranking = board.access().copy()
+        
+        for _ in range(0, 5):
+            item = ranking.pop()
+            title_txt = MEDIUM_FONT.render(f"# {i} {item[1]}: {item[0]} s", 1, BLACK)
+            win.blit(title_txt, title_txt.get_rect(center=(0.5*WIDTH, curY)))
+            i += 1
+            curY += 60
+
+        # the buttons
+        buttonWidth = 150
+        buttonHeight = 50
+        backX = 0.5*(WIDTH-buttonWidth)
+        backY = 700
+        
+        mouse = pygame.mouse.get_pos() # get the position of the mouse
+        click = pygame.mouse.get_pressed()  # get the buttons of the mouse
+
+        # determine whether the mouse is within the buttons
+        pygame.draw.rect(win, ORANGE, (backX, backY, buttonWidth, buttonHeight))
+
+        if utilities.detect_mouse(mouse, backX, backY, buttonWidth, buttonHeight):
+            pygame.draw.rect(win, GOLD, (backX, backY, buttonWidth, buttonHeight))
+            if click[0]:
+                return 2
+
+        # put text on the buttons
+        menu_txt = MEDIUM_FONT.render("Back", 1, BLACK)
+        win.blit(menu_txt, menu_txt.get_rect(center=(backX+0.5*buttonWidth, backY+0.5*buttonHeight)))
+
+        pygame.display.update()
+
+        # detect quit action
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                return -1
+
+    return 0
+
+def game_racing(win):
+
+    pass
+
 
 def main():
     
@@ -175,58 +254,70 @@ def main():
     computer_car = cars.ComputerCar(1, 4)
     game_info = menu.GameInfo()
     flagMenu = True
+    board = menu.Leaderboard()
+
+    selectWin = 0
 
     while running:
 
         clock.tick(FPS) # the while loop runs at 60 FPS
 
-        if flagMenu:
-            running = game_intro(WIN)
-
-        if not running:
-            break
-
-        draw(WIN, images, player_car, computer_car, game_info)
-
-        while not game_info.started and flagMenu:
-            utilities.show_msg(WIN, MAIN_FONT, f"Press any key to start level {game_info.level}...")
-            pygame.display.update()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                    running = False
-                    flagMenu = False
-                    break
-                # get the path for the computer car
-                elif event.type == pygame.KEYDOWN:
-                    game_info.start_level()
-                    flagMenu = False
-
-        if not flagMenu:
-            computer_car.move()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                    running = False
-                    break
-                elif (event.type == pygame.KEYDOWN and event.key == pygame.K_i):
-                    player_car.x = 150
-                    player_car.y = 330
-                elif (event.type == pygame.KEYDOWN and event.key == pygame.K_o):
-                    computer_car.x, computer_car.y = computer_car.path[-2]
-                
-            move_player(player_car)
-
-            # check if the car hit the boundry of the track
-            if player_car.collide (TRACK_BORDER_MASK) != None:
-                player_car.bounce()
-
-            # detect which car enter the finish line first
-            finish_line_ribbon(WIN, player_car, computer_car, game_info)
-
-            if game_info.game_finished():
-                utilities.show_msg(WIN, MAIN_FONT, "You won the game!")
-                pygame.time.wait(2500)
-                running = False
+        # determine which window the player if in
+        if selectWin == 0:
+            selectWin = game_intro(WIN)
+            if selectWin < 0:
                 break
+        elif selectWin == 1:
+            selectWin = game_leaderboard(WIN, board)
+            if selectWin < 0:
+                break
+        else:
+
+            draw(WIN, images, player_car, computer_car, game_info)
+
+            while not game_info.started and flagMenu:
+                utilities.show_msg(WIN, MAIN_FONT, f"Press any key to start level {game_info.level}...")
+                pygame.display.update()
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                        running = False
+                        flagMenu = False
+                        break
+                    # get the path for the computer car
+                    elif event.type == pygame.KEYDOWN:
+                        game_info.start_level()
+                        flagMenu = False
+
+            if not flagMenu:
+                computer_car.move()
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                        running = False
+                        break
+                    elif (event.type == pygame.KEYDOWN and event.key == pygame.K_i):
+                        player_car.x = 150
+                        player_car.y = 330
+                    elif (event.type == pygame.KEYDOWN and event.key == pygame.K_o):
+                        computer_car.x, computer_car.y = computer_car.path[-2]
+                    
+                move_player(player_car)
+
+                # check if the car hit the boundry of the track
+                if player_car.collide (TRACK_BORDER_MASK) != None:
+                    player_car.bounce()
+
+                # detect which car enter the finish line first
+                player_time = finish_line_ribbon(WIN, player_car, computer_car, game_info)
+
+                # check if the player makes in to the leaderboard
+                if player_time:
+                    board.append((player_time, 'Neil'))
+                
+                if game_info.game_finished():
+                    utilities.show_msg(WIN, MAIN_FONT, "You won the game!")
+                    pygame.time.wait(2500)
+                    running = False
+                    break
             
     pygame.quit()   # NOTE: it does not exit the program
 
