@@ -70,8 +70,20 @@ class Leaderboard:
                 self.q.append(data)
                 self.q.sort()
                 self.q.pop()
+                self.save_data()
                 return True
     
     def access(self):
 
-        return self.q
+        return self.q.copy()
+
+    def reset_leaderboard(self):
+
+        self.q = []
+        self.q.append((100, "Unknown"))
+        self.q.append((100, "Unknown"))
+        self.q.append((100, "Unknown"))
+        self.q.append((100, "Unknown"))
+        self.q.append((100, "Unknown"))
+
+        self.save_data()
