@@ -68,6 +68,7 @@ class PlayerCar(AbstractCar):
     '''
     IMG = RED_CAR
     START_POS = (180, 200)
+    player_name = ""
 
     def reduce_speed(self):
 
@@ -81,6 +82,14 @@ class PlayerCar(AbstractCar):
         """
         self.vel *= -0.5
         self.move()
+    
+    def player_name_getter(self):
+
+        return self.player_name
+    
+    def player_name_setter(self, new_name):
+
+        self.player_name = new_name
 
 class ComputerCar(AbstractCar):
     

@@ -120,6 +120,7 @@ def game_intro(win):
     The game intro page
     '''
     intro = True
+    player_name = "John"
 
     while intro:
 
@@ -127,7 +128,7 @@ def game_intro(win):
         win.blit(TRACK, (0,0))
 
         welcome_txt = MAIN_FONT.render("Welcome to the racing game", 1, GAINSBORO, SLATE)
-        win.blit(welcome_txt, welcome_txt.get_rect(center=(WIDTH/2, HEIGHT/2)))
+        win.blit(welcome_txt, welcome_txt.get_rect(center=(WIDTH/2, HEIGHT/2-100)))
         welcome_txt = MAIN_FONT.render("Press ENTER to begin or press ESC to exit", 1, GAINSBORO, SLATE)
         pos = welcome_txt.get_rect(center=(WIDTH/2, HEIGHT/2))
         pos[1] += welcome_txt.get_height()
@@ -154,15 +155,15 @@ def game_intro(win):
         if utilities.detect_mouse(mouse, quitX, quitY, buttonWidth, buttonHeight):
             pygame.draw.rect(win, RED, (quitX, quitY, buttonWidth, buttonHeight))
             if click[0]:
-                return -1
+                return -1, player_name
         if utilities.detect_mouse(mouse, startX, startY, buttonWidth, buttonHeight):
             pygame.draw.rect(win, LIME, (startX, startY, buttonWidth, buttonHeight))
             if click[0]:
-                return 2
+                return 2, player_name
         if utilities.detect_mouse(mouse, leaderboardX, leaderboardY, buttonWidth, buttonHeight):
             pygame.draw.rect(win, VIOLET, (leaderboardX, leaderboardY, buttonWidth, buttonHeight))
             if click[0]:
-                return 1
+                return 1, player_name
 
         # put text on the buttons
         menu_txt = MEDIUM_FONT.render("Quit", 1, BLACK)
@@ -175,10 +176,10 @@ def game_intro(win):
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                return -1
+                return -1, player_name
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                return 2
-    return 0
+                return 2, player_name
+    return 0, player_name
 
 def game_leaderboard(win, board):
     
@@ -235,11 +236,6 @@ def game_leaderboard(win, board):
 
     return 0
 
-def game_racing(win):
-
-    pass
-
-
 def main():
     
     # set up the display
@@ -265,7 +261,9 @@ def main():
 
         # determine which window the player if in
         if selectWin == 0:
-            selectWin = game_intro(WIN)
+            ret = game_intro(WIN)
+            selectWin = ret[0]
+            player_car.player_name = ret[1]
             if selectWin < 0:
                 break
         elif selectWin == 1:
@@ -312,7 +310,7 @@ def main():
 
                 # check if the player makes in to the leaderboard
                 if player_time > 0:
-                    board.append((player_time, 'Neil'))
+                    board.append((player_time, player_car.player_name))
                 
                 if game_info.game_finished():
                     utilities.show_msg(WIN, MAIN_FONT, "You won the game!")
