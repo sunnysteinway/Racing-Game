@@ -106,11 +106,12 @@ def finish_line_ribbon(win, player_car, computer_car, game_info):
             return -1
         # collide with the finish line after finishing the entire track
         else:
+            ret = round(game_info.get_level_time(), 3)
             game_info.next_level()  # go to the next level
             player_car.reset()
             computer_car.level_up(game_info.level)  # update the difficulty of the next level
             game_info.start_level()
-            return round(game_info.get_level_time(), 3)
+            return ret
     
     return -1
 
@@ -310,7 +311,7 @@ def main():
                 player_time = finish_line_ribbon(WIN, player_car, computer_car, game_info)
 
                 # check if the player makes in to the leaderboard
-                if player_time > 0.1:
+                if player_time > 0:
                     board.append((player_time, 'Neil'))
                 
                 if game_info.game_finished():
