@@ -110,7 +110,7 @@ def finish_line_ribbon(win, player_car, computer_car, game_info):
             player_car.reset()
             computer_car.level_up(game_info.level)  # update the difficulty of the next level
             game_info.start_level()
-            return game_info.get_level_time()
+            return round(game_info.get_level_time(), 3)
     
     return -1
 
@@ -182,6 +182,7 @@ def game_intro(win):
 def game_leaderboard(win, board):
     
     leader = True
+    ranking = board.access()
     while leader:
 
         # the background of the leaderboard
@@ -195,10 +196,9 @@ def game_leaderboard(win, board):
         # the content of the leaderboard
         curY = 200
         i = 1
-        ranking = board.access().copy()
         
-        for _ in range(0, 5):
-            item = ranking.pop()
+        for idx in range(0, 5):
+            item = ranking[idx]
             title_txt = MEDIUM_FONT.render(f"# {i} {item[1]}: {item[0]} s", 1, BLACK)
             win.blit(title_txt, title_txt.get_rect(center=(0.5*WIDTH, curY)))
             i += 1
@@ -310,7 +310,7 @@ def main():
                 player_time = finish_line_ribbon(WIN, player_car, computer_car, game_info)
 
                 # check if the player makes in to the leaderboard
-                if player_time:
+                if player_time > 0.1:
                     board.append((player_time, 'Neil'))
                 
                 if game_info.game_finished():
