@@ -37,6 +37,7 @@ INDIGO = (75,0,130)
 VIOLET = (138,43,226)
 GOLD = (255,215,0)
 ORANGE = (255,140,0)
+AZURE = (240,255,255)
 
 # set the uniform FPS rate
 FPS = 60
@@ -120,15 +121,18 @@ def game_intro(win):
     The game intro page
     '''
     intro = True
-    player_name = "John"
+    player_name = "Enter Ur Name..."
 
     while intro:
 
         win.blit(GRASS, (0, 0))
         win.blit(TRACK, (0,0))
+        pygame.draw.rect(win, SLATE, (0, 200, WIDTH, HEIGHT-400))
 
         welcome_txt = MAIN_FONT.render("Welcome to the racing game", 1, GAINSBORO, SLATE)
         win.blit(welcome_txt, welcome_txt.get_rect(center=(WIDTH/2, HEIGHT/2-100)))
+        welcome_txt = MAIN_FONT.render(player_name, 1, GAINSBORO)
+        win.blit(welcome_txt, welcome_txt.get_rect(center=(WIDTH/2, HEIGHT/2)))
         welcome_txt = MAIN_FONT.render("Press ENTER to begin or press ESC to exit", 1, GAINSBORO, SLATE)
         pos = welcome_txt.get_rect(center=(WIDTH/2, HEIGHT/2))
         pos[1] += welcome_txt.get_height()
@@ -179,6 +183,11 @@ def game_intro(win):
                 return -1, player_name
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 return 2, player_name
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    player_name = player_name[:-1]
+                else:
+                    player_name += event.unicode
     return 0, player_name
 
 def game_leaderboard(win, board):
@@ -188,12 +197,12 @@ def game_leaderboard(win, board):
     while leader:
 
         # the background of the leaderboard
-        win.fill(WHITE)
+        win.fill((176,196,222))
 
         # the title of the leaderboard
         title_txt = MEDIUM_FONT.render("Leaderboard", 1, BLACK)
-        win.blit(title_txt, title_txt.get_rect(center=(0.5*WIDTH, 50)))
-        pygame.draw.line(win, BLACK, start_pos=(50, 70), end_pos=(WIDTH - 50, 70))
+        win.blit(title_txt, title_txt.get_rect(center=(0.5*WIDTH, 80)))
+        pygame.draw.line(win, BLACK, start_pos=(50, 100), end_pos=(WIDTH - 50, 100))
 
         # the content of the leaderboard
         curY = 200
