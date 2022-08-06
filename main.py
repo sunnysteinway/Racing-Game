@@ -121,7 +121,7 @@ def game_intro(win):
     The game intro page
     '''
     intro = True
-    player_name = "Enter Ur Name..."
+    player_name = "Enter Your Name..."
 
     while intro:
 
@@ -131,7 +131,7 @@ def game_intro(win):
 
         welcome_txt = MAIN_FONT.render("Welcome to the racing game", 1, GAINSBORO, SLATE)
         win.blit(welcome_txt, welcome_txt.get_rect(center=(WIDTH/2, HEIGHT/2-100)))
-        welcome_txt = MAIN_FONT.render(player_name, 1, GAINSBORO)
+        welcome_txt = MAIN_FONT.render(player_name, 1, (255,69,0))
         win.blit(welcome_txt, welcome_txt.get_rect(center=(WIDTH/2, HEIGHT/2)))
         welcome_txt = MAIN_FONT.render("Press ENTER to begin or press ESC to exit", 1, GAINSBORO, SLATE)
         pos = welcome_txt.get_rect(center=(WIDTH/2, HEIGHT/2))
