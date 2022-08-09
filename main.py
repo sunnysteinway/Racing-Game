@@ -1,5 +1,6 @@
 from random import random
 import pygame
+import time
 
 import utilities
 import cars
@@ -29,7 +30,6 @@ pygame.mixer.music.load('sounds/tokyo-drift.wav')
 pygame.mixer.music.set_volume(0.3)
 crash_sound = pygame.mixer.Sound('sounds/crash-with-hiss_cHsbVTyd.wav')
 metal_crash_sound = pygame.mixer.Sound('sounds\metal-crash_ruquXq2a.wav')
-engine_startup_sound = pygame.mixer.Sound('sounds/engine-start-up.wav')
 supercar_revving_sound = pygame.mixer.Sound('sounds/supercar-revving.wav')
 metal_crash_sound.set_volume(0.7)
 
@@ -278,6 +278,8 @@ def main():
     pygame.mixer.music.play(2)
 
     selectWin = 0
+    prev = -1
+
 
     while running:
 
@@ -329,12 +331,18 @@ def main():
                 if player_car.collide (TRACK_BORDER_MASK) != None:
 
                     player_car.bounce()
-                    # play sound effect
-                    num = random()
-                    if num > 0.5:
-                        pygame.mixer.Sound.play(metal_crash_sound)
-                    else:
-                        pygame.mixer.Sound.play(crash_sound)
+
+                    # get previous time
+                    cur = time.time()
+
+                    if (cur - prev) > 0.1:
+                        # play sound effect
+                        num = random()
+                        if num > 0.5:
+                            pygame.mixer.Sound.play(metal_crash_sound)
+                        else:
+                            pygame.mixer.Sound.play(crash_sound)
+                    prev = cur
 
                 # detect which car enter the finish line first
                 player_time = finish_line_ribbon(WIN, player_car, computer_car, game_info)
